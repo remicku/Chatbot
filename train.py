@@ -1,5 +1,6 @@
 import json
 import numpy as np
+import sys
 
 import torch
 import torch.nn as nn
@@ -63,8 +64,11 @@ input_size = len(X_train[0]) # len(all_words)
 learning_rate = 0.001
 num_epochs = 1000
 
+# avoid multiprocessing issues on Windows
+num_workers = 2 if sys.platform != "win32" else 0
+
 dataset = ChatDataset()
-train_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=2)
+train_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = NeuralNet(input_size, hidden_size, output_size).to(device)
