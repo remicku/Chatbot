@@ -49,14 +49,14 @@ class ChatDataset(Dataset):
         self.x_data = X_train
         self.y_data = y_train
 
-    #dataset[idx]
+    # dataset[idx]
     def __getitem__(self, index):
         return self.x_data[index], self.y_data[index]
     
     def __len__(self):
         return self.n_samples
 
-#Hyperparameters
+# Hyperparameters
 batch_size = 8
 hidden_size = 8
 output_size = len(tags)
@@ -82,11 +82,11 @@ for epoch in range(num_epochs):
         words = words.to(device)
         labels = labels.to(device)
 
-        #forward
+        # forward
         outputs = model(words)
         loss = criterion(outputs, labels)
 
-        #backward and optimizer step
+        # backward and optimizer step
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -95,3 +95,17 @@ for epoch in range(num_epochs):
         print(f'epoch {epoch + 1}/{num_epochs}, loss={loss.item():.4f}')
 
 print(f'final loss, loss={loss.item():.4f}')
+
+data = {
+    "model_state": model.state_dict(),
+    "input_size": input_size,
+    "output_size": output_size,
+    "hidden_size": hidden_size,
+    "all_words": all_words,
+    "tags": tags
+}
+
+FILE = "data.pth"
+torch.save(data, FILE)
+
+print(f'training complete. file saved to {FILE}')
